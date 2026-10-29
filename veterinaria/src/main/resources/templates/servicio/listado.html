@@ -1,0 +1,165 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{General/fragmentos :: head}"></head>
+
+<body>
+<header th:replace="~{General/fragmentos :: header}"></header>
+
+<main class="container">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <h1>Catálogo de servicios</h1>
+            <p>Conoce y administra los servicios de Huella Verde Veterinaria.</p>
+        </div>
+
+        <span class="badge text-bg-success fs-6">
+            Total: <span th:text="${totalServicios}">0</span>
+        </span>
+    </div>
+
+    <div th:if="${mensajeExito}" class="alert alert-success"
+         th:text="${mensajeExito}"></div>
+
+    <div th:if="${mensajeError}" class="alert alert-danger"
+         th:text="${mensajeError}"></div>
+
+    <div class="card mb-4">
+        <div class="card-header">Registrar nuevo servicio</div>
+
+        <div class="card-body">
+            <form th:action="@{/servicio/guardar}" method="post">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="nombre" class="form-label">Nombre del servicio</label>
+                        <input type="text" id="nombre" name="nombre"
+                               class="form-control" maxlength="100" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="tipoServicioId" class="form-label">Tipo de servicio</label>
+                        <select id="tipoServicioId" name="tipoServicioId"
+                                class="form-select" required>
+                            <option value="">Seleccione un tipo</option>
+                            <option th:each="tipo : ${tiposServicio}"
+                                    th:value="${tipo.id}"
+                                    th:text="${tipo.nombre}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="precio" class="form-label">Precio (₡)</label>
+                        <input type="number" id="precio" name="precio"
+                               class="form-control" min="0.01" step="0.01" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="duracionMinutos" class="form-label">
+                            Duración (minutos)
+                        </label>
+                        <input type="number" id="duracionMinutos"
+                               name="duracionMinutos" class="form-control"
+                               min="1" step="1" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-3">
+                    Guardar servicio
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Servicios disponibles</div>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Servicio</th>
+                        <th>Tipo</th>
+                        <th>Precio</th>
+                        <th>Duración</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="servicio : ${servicios}">
+                        <td th:text="${servicio.id}">1</td>
+                        <td th:text="${servicio.nombre}">Consulta general</td>
+                        <td th:text="${servicio.tipoServicio.nombre}">Consulta</td>
+
+                        <td th:text="${'₡' + #numbers.formatDecimal(servicio.precio, 1, 'COMMA', 2, 'POINT')}">
+                            ₡10,000.00
+                        </td>
+
+                        <td>
+                            <span th:text="${servicio.duracionMinutos}">30</span> min
+                        </td>
+
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm"
+                                    data-bs-toggle="modal"
+                                    th:attr="data-bs-target='#modalServicio' + ${servicio.id}">
+                                Eliminar
+                            </button>
+
+                            <div class="modal fade"
+                                 th:id="'modalServicio' + ${servicio.id}"
+                                 tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Confirmar eliminación</h5>
+                                            <button type="button" class="btn-close"
+                                                    data-bs-dismiss="modal"
+                                                    aria-label="Cerrar"></button>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            ¿Deseas eliminar el servicio
+                                            <strong th:text="${servicio.nombre}"></strong>?
+
+                                            <p class="text-danger mt-2 mb-0">
+                                                No se podrá eliminar si tiene citas asociadas.
+                                            </p>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">
+                                                Cancelar
+                                            </button>
+
+                                            <form th:action="@{/servicio/eliminar}" method="post">
+                                                <input type="hidden" name="id"
+                                                       th:value="${servicio.id}">
+                                                <button type="submit" class="btn btn-danger">
+                                                    Sí, eliminar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(servicios)}">
+                        <td colspan="6" class="text-center py-4">
+                            Todavía no hay servicios registrados.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{General/fragmentos :: footer}"></footer>
+</body>
+</html>

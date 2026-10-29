@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{General/fragmentos :: head}"></head>
+
+<body>
+<header th:replace="~{General/fragmentos :: header}"></header>
+
+<main class="container">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <h1>Agenda de citas</h1>
+            <p>Consulta las citas registradas para nuestros pacientes.</p>
+        </div>
+
+        <span class="badge text-bg-success fs-6">
+            Total de citas: <span th:text="${totalCitas}">0</span>
+        </span>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Citas registradas</div>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Mascota</th>
+                        <th>Propietario</th>
+                        <th>Fecha</th>
+                        <th>Servicio</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="cita : ${citas}">
+                        <td th:text="${cita.id}">1</td>
+                        <td>
+                            <strong th:text="${cita.nombreMascota}">Max</strong>
+                        </td>
+                        <td th:text="${cita.nombrePropietario}">María</td>
+                        <td th:text="${#temporals.format(cita.fecha, 'dd/MM/yyyy')}">
+                            28/10/2026
+                        </td>
+                        <td th:text="${cita.servicio.nombre}">Consulta general</td>
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(citas)}">
+                        <td colspan="5" class="text-center py-4">
+                            No hay citas registradas actualmente.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="alert alert-info mt-4">
+        Esta sección es de consulta. Las citas se muestran a partir de los
+        registros existentes en la base de datos.
+    </div>
+</main>
+
+<footer th:replace="~{General/fragmentos :: footer}"></footer>
+</body>
+</html>

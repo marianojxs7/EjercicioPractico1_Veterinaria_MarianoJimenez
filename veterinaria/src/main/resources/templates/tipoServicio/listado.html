@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{General/fragmentos :: head}"></head>
+
+<body>
+    <header th:replace="~{General/fragmentos :: header}"></header>
+
+    <main class="container">
+
+        <!-- Título y cantidad de registros -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+            <div>
+                <h1>Tipos de servicio</h1>
+                <p>Organiza las categorías de atención de Huella Verde Veterinaria.</p>
+            </div>
+
+            <span class="badge text-bg-success fs-6">
+                Total: <span th:text="${totalTipos}">0</span>
+            </span>
+        </div>
+
+        <!-- Mensajes del controlador -->
+        <div th:if="${mensajeExito}"
+             class="alert alert-success"
+             role="alert"
+             th:text="${mensajeExito}">
+        </div>
+
+        <div th:if="${mensajeError}"
+             class="alert alert-danger"
+             role="alert"
+             th:text="${mensajeError}">
+        </div>
+
+        <!-- Formulario de registro -->
+        <div class="card mb-4">
+            <div class="card-header">
+                Registrar tipo de servicio
+            </div>
+
+            <div class="card-body">
+                <form th:action="@{/tipo-servicio/guardar}" method="post">
+
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <label for="nombre" class="form-label">
+                                Nombre
+                            </label>
+
+                            <input type="text"
+                                   id="nombre"
+                                   name="nombre"
+                                   class="form-control"
+                                   maxlength="100"
+                                   required>
+                        </div>
+
+                        <div class="col-md-7">
+                            <label for="descripcion" class="form-label">
+                                Descripción
+                            </label>
+
+                            <input type="text"
+                                   id="descripcion"
+                                   name="descripcion"
+                                   class="form-control"
+                                   maxlength="255">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-3">
+                        Guardar tipo
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tabla de tipos registrados -->
+        <div class="card">
+            <div class="card-header">
+                Tipos registrados
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Servicios asociados</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr th:each="tipo : ${tiposServicio}">
+                            <td th:text="${tipo.id}">1</td>
+
+                            <td th:text="${tipo.nombre}">
+                                Consulta
+                            </td>
+
+                            <td th:text="${tipo.descripcion}">
+                                Descripción
+                            </td>
+
+                            <td th:text="${tipo.servicios.size()}">
+                                0
+                            </td>
+
+                            <td>
+                                <button type="button"
+                                        class="btn btn-danger btn-sm"
+                                        data-bs-toggle="modal"
+                                        th:attr="data-bs-target='#modalTipo' + ${tipo.id}">
+                                    Eliminar
+                                </button>
+
+                                <!-- Modal de confirmación -->
+                                <div class="modal fade"
+                                     th:id="'modalTipo' + ${tipo.id}"
+                                     tabindex="-1"
+                                     aria-hidden="true">
+
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">
+                                                    Confirmar eliminación
+                                                </h5>
+
+                                                <button type="button"
+                                                        class="btn-close"
+                                                        data-bs-dismiss="modal"
+                                                        aria-label="Cerrar">
+                                                </button>
+                                            </div>
+
+                                            <div class="modal-body">
+                                                ¿Deseas eliminar el tipo
+                                                <strong th:text="${tipo.nombre}">
+                                                    Consulta
+                                                </strong>?
+
+                                                <p class="text-danger mt-2 mb-0">
+                                                    No se podrá eliminar si tiene
+                                                    servicios asociados.
+                                                </p>
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="button"
+                                                        class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">
+                                                    Cancelar
+                                                </button>
+
+                                                <form th:action="@{/tipo-servicio/eliminar}"
+                                                      method="post">
+
+                                                    <input type="hidden"
+                                                           name="id"
+                                                           th:value="${tipo.id}">
+
+                                                    <button type="submit"
+                                                            class="btn btn-danger">
+                                                        Sí, eliminar
+                                                    </button>
+                                                </form>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Tabla vacía -->
+                        <tr th:if="${#lists.isEmpty(tiposServicio)}">
+                            <td colspan="5" class="text-center py-4">
+                                Todavía no hay tipos de servicio registrados.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <footer th:replace="~{General/fragmentos :: footer}"></footer>
+</body>
+</html>

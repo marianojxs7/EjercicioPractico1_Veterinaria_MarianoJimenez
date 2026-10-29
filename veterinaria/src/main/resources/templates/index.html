@@ -1,0 +1,207 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{General/fragmentos :: head}"></head>
+
+<body>
+    <header th:replace="~{General/fragmentos :: header}"></header>
+
+    <main class="container">
+
+        <!-- Presentación principal -->
+        <section class="hero">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-7">
+                    <p class="text-uppercase fw-bold mb-2">
+                        Bienestar animal · Atención profesional
+                    </p>
+                    <h1>Su salud, nuestra mayor huella.</h1>
+                    <p>
+                        En Huella Verde Veterinaria cuidamos de tus compañeros
+                        con atención cercana, servicios profesionales y mucho cariño.
+                    </p>
+                    <a th:href="@{/servicio/listado}" class="btn btn-primary me-2">
+                        Conocer servicios
+                    </a>
+                    <a href="#contacto" class="btn btn-warning">
+                        Contáctanos
+                    </a>
+                </div>
+
+                <div class="col-lg-5">
+                    <iframe
+                        class="media-frame"
+                        src="https://www.youtube.com/embed/2l4FS1EBM4Y"
+                        title="Video relacionado con mascotas"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+        </section>
+
+        <!-- Información de la clínica -->
+        <section class="my-5">
+            <div class="text-center mb-4">
+                <h2>Un cuidado pensado para ellos</h2>
+                <p>Atención integral para tus mascotas en cada etapa de su vida.</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h3>🐕 Medicina preventiva</h3>
+                            <p>
+                                Servicios orientados al bienestar y a la prevención
+                                de problemas de salud en tus mascotas.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h3>🐈 Atención personalizada</h3>
+                            <p>
+                                Tratamos a cada paciente considerando sus necesidades
+                                y las de su familia.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h3>🐾 Servicios especializados</h3>
+                            <p>
+                                Consulta nuestro catálogo para conocer los servicios
+                                disponibles en nuestra clínica.
+                            </p>
+                            <a th:href="@{/servicio/listado}">Ver catálogo →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Promoción mensual -->
+        <section class="promo my-5">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2>Promoción del mes</h2>
+                    <p class="mb-0">
+                        Consulta en nuestra clínica las promociones vigentes
+                        y encuentra el cuidado ideal para tu mascota.
+                    </p>
+                </div>
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                    <a href="#contacto" class="btn btn-warning">
+                        Solicitar información
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Horarios y ubicación -->
+        <section class="my-5">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2>Horario de atención</h2>
+                            <p><strong>Lunes a viernes:</strong> 8:00 a. m. – 6:00 p. m.</p>
+                            <p><strong>Sábados:</strong> 8:00 a. m. – 2:00 p. m.</p>
+                            <p class="mb-0">
+                                Domingos y feriados: atención con cita previa.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2>Ubicación</h2>
+                            <p>
+                                Visítanos y consulta por nuestros servicios.
+                            </p>
+                            <p class="mb-0">
+                                Dirección: completar con la ubicación de la clínica.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Formulario de contacto -->
+        <section id="contacto" class="my-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Contáctanos</h2>
+                        </div>
+
+                        <div class="card-body">
+                            <p>
+                                Déjanos tus datos y tu consulta.
+                                Nuestro equipo estará encantado de orientarte.
+                            </p>
+
+                            <div th:if="${mensajeContacto}"
+                                 class="alert alert-success"
+                                 th:text="${mensajeContacto}">
+                            </div>
+
+                            <form th:action="@{/contacto}" method="post">
+                                <div class="mb-3">
+                                    <label for="nombre" class="form-label">
+                                        Nombre completo
+                                    </label>
+                                    <input type="text" id="nombre" name="nombre"
+                                           class="form-control" required maxlength="100">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="correo" class="form-label">
+                                        Correo electrónico
+                                    </label>
+                                    <input type="email" id="correo" name="correo"
+                                           class="form-control" required maxlength="150">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="mascota" class="form-label">
+                                        Nombre de la mascota
+                                    </label>
+                                    <input type="text" id="mascota" name="mascota"
+                                           class="form-control" required maxlength="100">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="mensaje" class="form-label">
+                                        ¿En qué podemos ayudarte?
+                                    </label>
+                                    <textarea id="mensaje" name="mensaje"
+                                              class="form-control" rows="4"
+                                              required maxlength="1000"></textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">
+                                    Enviar consulta
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer th:replace="~{General/fragmentos :: footer}"></footer>
+</body>
+</html>
