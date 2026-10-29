@@ -40,6 +40,7 @@ public class ServicioController {
 
     @PostMapping("/guardar")
     public String guardar(
+            @RequestParam(required = false) Integer id,
             @RequestParam String nombre,
             @RequestParam BigDecimal precio,
             @RequestParam Integer duracionMinutos,
@@ -57,19 +58,35 @@ public class ServicioController {
                 return "redirect:/servicio/listado";
             }
 
-            TipoServicio tipo = resultado.get();
+            Servicio servicio;
 
-            Servicio servicio = new Servicio();
+            if (id != null) {
+                Optional<Servicio> existente = servicioService.getServicio(id);
+
+                if (existente.isEmpty()) {
+                    redirectAttributes.addFlashAttribute(
+                            "mensajeError",
+                            "El servicio que intentas editar no existe.");
+                    return "redirect:/servicio/listado";
+                }
+
+                servicio = existente.get();
+            } else {
+                servicio = new Servicio();
+            }
+
             servicio.setNombre(nombre);
             servicio.setPrecio(precio);
             servicio.setDuracionMinutos(duracionMinutos);
-            servicio.setTipoServicio(tipo);
+            servicio.setTipoServicio(resultado.get());
 
             servicioService.save(servicio);
 
             redirectAttributes.addFlashAttribute(
                     "mensajeExito",
-                    "El servicio se registró correctamente.");
+                    id != null
+                    ? "El servicio se actualizó correctamente."
+                    : "El servicio se registró correctamente.");
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute(

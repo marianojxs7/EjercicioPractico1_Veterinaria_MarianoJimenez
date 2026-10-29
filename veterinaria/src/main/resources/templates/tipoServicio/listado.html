@@ -1,14 +1,15 @@
 
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="~{General/fragmentos :: head}"></head>
 
 <body>
+
     <header th:replace="~{General/fragmentos :: header}"></header>
 
-    <main class="container">
+    <main class="container py-4">
 
-        <!-- Título y cantidad de registros -->
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
             <div>
                 <h1>Tipos de servicio</h1>
@@ -20,7 +21,6 @@
             </span>
         </div>
 
-        <!-- Mensajes del controlador -->
         <div th:if="${mensajeExito}"
              class="alert alert-success"
              role="alert"
@@ -33,7 +33,7 @@
              th:text="${mensajeError}">
         </div>
 
-        <!-- Formulario de registro -->
+        <!-- Registro de tipos de servicio -->
         <div class="card mb-4">
             <div class="card-header">
                 Registrar tipo de servicio
@@ -43,6 +43,7 @@
                 <form th:action="@{/tipo-servicio/guardar}" method="post">
 
                     <div class="row g-3">
+
                         <div class="col-md-5">
                             <label for="nombre" class="form-label">
                                 Nombre
@@ -67,23 +68,26 @@
                                    class="form-control"
                                    maxlength="255">
                         </div>
+
                     </div>
 
                     <button type="submit" class="btn btn-primary mt-3">
-                        Guardar tipo
+                        Registrar tipo
                     </button>
+
                 </form>
             </div>
         </div>
 
-        <!-- Tabla de tipos registrados -->
+        <!-- Listado -->
         <div class="card">
             <div class="card-header">
                 Tipos registrados
             </div>
 
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover align-middle mb-0">
+
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -95,7 +99,9 @@
                     </thead>
 
                     <tbody>
+
                         <tr th:each="tipo : ${tiposServicio}">
+
                             <td th:text="${tipo.id}">1</td>
 
                             <td th:text="${tipo.nombre}">
@@ -106,84 +112,178 @@
                                 Descripción
                             </td>
 
-                            <td th:text="${tipo.servicios.size()}">
-                                0
-                            </td>
+                            <td th:text="${tipo.servicios.size()}">0</td>
 
                             <td>
-                                <button type="button"
-                                        class="btn btn-danger btn-sm"
-                                        data-bs-toggle="modal"
-                                        th:attr="data-bs-target='#modalTipo' + ${tipo.id}">
-                                    Eliminar
-                                </button>
+                                <div class="d-flex gap-2">
 
-                                <!-- Modal de confirmación -->
-                                <div class="modal fade"
-                                     th:id="'modalTipo' + ${tipo.id}"
-                                     tabindex="-1"
-                                     aria-hidden="true">
+                                    <!-- Abrir modal de edición -->
+                                    <button type="button"
+                                            class="btn btn-success btn-sm"
+                                            data-bs-toggle="modal"
+                                            th:attr="data-bs-target='#editarTipo' + ${tipo.id}">
+                                        Editar
+                                    </button>
 
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
+                                    <!-- Modal de edición -->
+                                    <div class="modal fade"
+                                         th:id="'editarTipo' + ${tipo.id}"
+                                         tabindex="-1"
+                                         aria-hidden="true">
 
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">
-                                                    Confirmar eliminación
-                                                </h5>
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
 
-                                                <button type="button"
-                                                        class="btn-close"
-                                                        data-bs-dismiss="modal"
-                                                        aria-label="Cerrar">
-                                                </button>
-                                            </div>
-
-                                            <div class="modal-body">
-                                                ¿Deseas eliminar el tipo
-                                                <strong th:text="${tipo.nombre}">
-                                                    Consulta
-                                                </strong>?
-
-                                                <p class="text-danger mt-2 mb-0">
-                                                    No se podrá eliminar si tiene
-                                                    servicios asociados.
-                                                </p>
-                                            </div>
-
-                                            <div class="modal-footer">
-                                                <button type="button"
-                                                        class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">
-                                                    Cancelar
-                                                </button>
-
-                                                <form th:action="@{/tipo-servicio/eliminar}"
+                                                <form th:action="@{/tipo-servicio/guardar}"
                                                       method="post">
 
-                                                    <input type="hidden"
-                                                           name="id"
-                                                           th:value="${tipo.id}">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">
+                                                            Editar tipo de servicio
+                                                        </h5>
 
-                                                    <button type="submit"
-                                                            class="btn btn-danger">
-                                                        Sí, eliminar
-                                                    </button>
+                                                        <button type="button"
+                                                                class="btn-close"
+                                                                data-bs-dismiss="modal"
+                                                                aria-label="Cerrar">
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+
+                                                        <input type="hidden"
+                                                               name="id"
+                                                               th:value="${tipo.id}">
+
+                                                        <div class="mb-3">
+                                                            <label class="form-label"
+                                                                   th:for="'nombreEditar' + ${tipo.id}">
+                                                                Nombre
+                                                            </label>
+
+                                                            <input type="text"
+                                                                   class="form-control"
+                                                                   name="nombre"
+                                                                   th:id="'nombreEditar' + ${tipo.id}"
+                                                                   th:value="${tipo.nombre}"
+                                                                   maxlength="100"
+                                                                   required>
+                                                        </div>
+
+                                                        <div class="mb-3">
+                                                            <label class="form-label"
+                                                                   th:for="'descripcionEditar' + ${tipo.id}">
+                                                                Descripción
+                                                            </label>
+
+                                                            <textarea class="form-control"
+                                                                      name="descripcion"
+                                                                      th:id="'descripcionEditar' + ${tipo.id}"
+                                                                      th:text="${tipo.descripcion}"
+                                                                      maxlength="255"
+                                                                      rows="3"></textarea>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <button type="button"
+                                                                class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">
+                                                            Cancelar
+                                                        </button>
+
+                                                        <button type="submit"
+                                                                class="btn btn-success">
+                                                            Guardar cambios
+                                                        </button>
+                                                    </div>
+
                                                 </form>
-                                            </div>
 
+                                            </div>
                                         </div>
                                     </div>
+
+                                    <!-- Abrir modal de eliminación -->
+                                    <button type="button"
+                                            class="btn btn-danger btn-sm"
+                                            data-bs-toggle="modal"
+                                            th:attr="data-bs-target='#eliminarTipo' + ${tipo.id}">
+                                        Eliminar
+                                    </button>
+
+                                    <!-- Modal de eliminación -->
+                                    <div class="modal fade"
+                                         th:id="'eliminarTipo' + ${tipo.id}"
+                                         tabindex="-1"
+                                         aria-hidden="true">
+
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">
+                                                        Confirmar eliminación
+                                                    </h5>
+
+                                                    <button type="button"
+                                                            class="btn-close"
+                                                            data-bs-dismiss="modal"
+                                                            aria-label="Cerrar">
+                                                    </button>
+                                                </div>
+
+                                                <div class="modal-body">
+                                                    ¿Deseas eliminar el tipo
+                                                    <strong th:text="${tipo.nombre}">
+                                                        Consulta
+                                                    </strong>?
+
+                                                    <p class="text-danger mt-2 mb-0">
+                                                        No se podrá eliminar si tiene
+                                                        servicios asociados.
+                                                    </p>
+                                                </div>
+
+                                                <div class="modal-footer">
+
+                                                    <button type="button"
+                                                            class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">
+                                                        Cancelar
+                                                    </button>
+
+                                                    <form th:action="@{/tipo-servicio/eliminar}"
+                                                          method="post">
+
+                                                        <input type="hidden"
+                                                               name="id"
+                                                               th:value="${tipo.id}">
+
+                                                        <button type="submit"
+                                                                class="btn btn-danger">
+                                                            Sí, eliminar
+                                                        </button>
+
+                                                    </form>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </td>
+
                         </tr>
 
-                        <!-- Tabla vacía -->
                         <tr th:if="${#lists.isEmpty(tiposServicio)}">
                             <td colspan="5" class="text-center py-4">
                                 Todavía no hay tipos de servicio registrados.
                             </td>
                         </tr>
+
                     </tbody>
                 </table>
             </div>
@@ -192,5 +292,6 @@
     </main>
 
     <footer th:replace="~{General/fragmentos :: footer}"></footer>
+
 </body>
 </html>

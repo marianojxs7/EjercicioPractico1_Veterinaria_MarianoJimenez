@@ -34,11 +34,34 @@ public class TipoServicioController {
             @ModelAttribute TipoServicio tipoServicio,
             RedirectAttributes redirectAttributes) {
 
-        tipoServicioService.save(tipoServicio);
+        boolean esEdicion = tipoServicio.getId() != null;
 
-        redirectAttributes.addFlashAttribute(
-                "mensajeExito",
-                "El tipo de servicio se guardó correctamente.");
+        try {
+            if (esEdicion
+                    && tipoServicioService
+                            .getTipoServicio(tipoServicio.getId())
+                            .isEmpty()) {
+
+                redirectAttributes.addFlashAttribute(
+                        "mensajeError",
+                        "El tipo de servicio que intentas editar no existe.");
+
+                return "redirect:/tipo-servicio/listado";
+            }
+
+            tipoServicioService.save(tipoServicio);
+
+            redirectAttributes.addFlashAttribute(
+                    "mensajeExito",
+                    esEdicion
+                    ? "El tipo de servicio se actualizó correctamente."
+                    : "El tipo de servicio se registró correctamente.");
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute(
+                    "mensajeError",
+                    "No fue posible guardar los cambios. Verifica los datos.");
+        }
 
         return "redirect:/tipo-servicio/listado";
     }
@@ -50,6 +73,7 @@ public class TipoServicioController {
 
         try {
             tipoServicioService.delete(id);
+
             redirectAttributes.addFlashAttribute(
                     "mensajeExito",
                     "El tipo de servicio se eliminó correctamente.");
